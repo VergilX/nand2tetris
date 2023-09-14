@@ -16,4 +16,32 @@ CHIP RAM512 {
 
     PARTS:
     // Put your code here:
+    DMux (in=load, sel=address[8], a=a0, b=a1);
+
+    DMux (in=a0, sel=address[7], a=b0, b=b1);
+    DMux (in=a1, sel=address[7], a=b2, b=b3);
+
+    DMux (in=b0, sel=address[6], a=r0, b=r1);
+    DMux (in=b1, sel=address[6], a=r2, b=r3);
+    DMux (in=b2, sel=address[6], a=r4, b=r5);
+    DMux (in=b3, sel=address[6], a=r6, b=r7);
+
+    RAM64 (in=in, load=r0, address=address[0..5], out=o0);
+    RAM64 (in=in, load=r1, address=address[0..5], out=o1);
+    RAM64 (in=in, load=r2, address=address[0..5], out=o2);
+    RAM64 (in=in, load=r3, address=address[0..5], out=o3);
+    RAM64 (in=in, load=r4, address=address[0..5], out=o4);
+    RAM64 (in=in, load=r5, address=address[0..5], out=o5);
+    RAM64 (in=in, load=r6, address=address[0..5], out=o6);
+    RAM64 (in=in, load=r7, address=address[0..5], out=o7);
+
+    Mux16 (a=o0, b=o1, sel=address[6], out=c0);
+    Mux16 (a=o2, b=o3, sel=address[6], out=c1);
+    Mux16 (a=o4, b=o5, sel=address[6], out=c2);
+    Mux16 (a=o6, b=o7, sel=address[6], out=c3);
+
+    Mux16 (a=c0, b=c1, sel=address[7], out=d0);
+    Mux16 (a=c2, b=c3, sel=address[7], out=d1);
+
+    Mux16 (a=d0, b=d1, sel=address[8], out=out);
 }
