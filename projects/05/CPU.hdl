@@ -40,4 +40,38 @@ CHIP CPU {
 
     PARTS:
     // Put your code here:
+
+    // Incoming signal
+    Or (a=instruction[15], b=instruction[5], out=Asel);
+    Mux16 (a=ALUout, b=instruction, sel=Asel, out=Ainp);
+    ARegister (in=Ainp, load=Asel, out=Aout, out[0..14]=addressM);
+
+    // ALU
+    Not (in=instruction[12], out=notinstr12);
+    And (a=instruction[15], b=notinstr12, out=ALUMuxsel);
+    Mux16 (a=Aout, b=inM, sel=ALUMuxsel, out=y);
+
+    And (a=instruction[15], b=instruction[4], out=Dload);
+    DRegister (in=ALUout, load=Dload, out=x);
+
+    ALU (x=x, y=y, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=outM, out=ALUout, zr=zr, ng=ng);
+
+    // Program counter
+    Not (in=zr, out=notzr);
+    Not (in=ng, out=notng);
+    And (a=notzr, b=notng, out=A3in);
+
+    And (a=A3in, b=instruction[0], out=A3);
+    And (a=zr, b=instruction[1], out=A2);
+    And (a=ng, b=instruction[2], out=A1);
+
+    Or (a=A3, b=A2, out=A3orA2);
+    Or (a=A3orA2, b=A1, out=PCMuxin);
+    Mux (a=false, b=PCMuxin, sel=instruction[15], out=PCload);
+    Not (in=instruction[15], out=PCinc);
+
+    PC (in=Aout, load=PCload, inc=PCinc, reset=reset, out[0..14]=pc);
+
+    // writeM
+    And (a=instruction[15], b=instruction[12], out=writeM);
 }
