@@ -42,13 +42,13 @@ CHIP CPU {
     // Put your code here:
 
     // Incoming signal
-    Or (a=instruction[15], b=instruction[5], out=Asel);
-    Mux16 (a=ALUout, b=instruction, sel=Asel, out=Ainp);
+    Not (in=instruction[15], out=notinstr15);
+    Or (a=notinstr15, b=instruction[5], out=Asel);
+    Mux16 (a=ALUout, b=instruction, sel=notinstr15, out=Ainp);
     ARegister (in=Ainp, load=Asel, out=Aout, out[0..14]=addressM);
 
     // ALU
-    Not (in=instruction[12], out=notinstr12);
-    And (a=instruction[15], b=notinstr12, out=ALUMuxsel);
+    And (a=instruction[15], b=instruction[12], out=ALUMuxsel);
     Mux16 (a=Aout, b=inM, sel=ALUMuxsel, out=y);
 
     And (a=instruction[15], b=instruction[4], out=Dload);
@@ -68,10 +68,10 @@ CHIP CPU {
     Or (a=A3, b=A2, out=A3orA2);
     Or (a=A3orA2, b=A1, out=PCMuxin);
     Mux (a=false, b=PCMuxin, sel=instruction[15], out=PCload);
-    Not (in=instruction[15], out=PCinc);
+    Not (in=PCload, out=PCinc);
 
     PC (in=Aout, load=PCload, inc=PCinc, reset=reset, out[0..14]=pc);
 
     // writeM
-    And (a=instruction[15], b=instruction[12], out=writeM);
+    And (a=instruction[15], b=instruction[3], out=writeM);
 }
