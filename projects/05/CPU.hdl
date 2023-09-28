@@ -44,19 +44,19 @@ CHIP CPU {
     // Incoming signal
     Not (in=instruction[15], out=notinstr15);
     Or (a=notinstr15, b=instruction[5], out=Asel);
-    Mux16 (a=ALUout, b=instruction, sel=notinstr15, out=Ainp);
-    ARegister (in=Ainp, load=Asel, out=Aout, out[0..14]=addressM);
+    Mux16 (a=ALUout, b=instruction, sel=notinstr15, out=Ainp);              // If A instruction, pass
+    ARegister (in=Ainp, load=Asel, out=Aout, out[0..14]=addressM);          // Load if A instruction or C instruction and dest has Aregister
 
     // ALU
-    And (a=instruction[15], b=instruction[12], out=ALUMuxsel);
+    And (a=instruction[15], b=instruction[12], out=ALUMuxsel);              // Select A if a=0, else select inM
     Mux16 (a=Aout, b=inM, sel=ALUMuxsel, out=y);
 
-    And (a=instruction[15], b=instruction[4], out=Dload);
+    And (a=instruction[15], b=instruction[4], out=Dload);                   // Load if dest contains D
     DRegister (in=ALUout, load=Dload, out=x);
 
     ALU (x=x, y=y, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=outM, out=ALUout, zr=zr, ng=ng);
 
-    // Program counter
+    // Program counter : Uses jump bits to determine next address
     Not (in=zr, out=notzr);
     Not (in=ng, out=notng);
     And (a=notzr, b=notng, out=A3in);
@@ -68,10 +68,11 @@ CHIP CPU {
     Or (a=A3, b=A2, out=A3orA2);
     Or (a=A3orA2, b=A1, out=PCMuxin);
     Mux (a=false, b=PCMuxin, sel=instruction[15], out=PCload);
-    Not (in=PCload, out=PCinc);
+
+    Not (in=PCload, out=PCinc);                                         // If not loaded, increment
 
     PC (in=Aout, load=PCload, inc=PCinc, reset=reset, out[0..14]=pc);
 
     // writeM
-    And (a=instruction[15], b=instruction[3], out=writeM);
+    And (a=instruction[15], b=instruction[3], out=writeM);              // If destination contains M
 }
