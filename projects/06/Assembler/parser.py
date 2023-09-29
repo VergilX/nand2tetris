@@ -16,7 +16,6 @@ def remove_whitespace(ins):
     for i in ins:
         if i != " ":
             cleaned_ins += i
-
     return cleaned_ins
 
 def remove_comments(ins):
@@ -24,10 +23,13 @@ def remove_comments(ins):
 
     n = len(ins)
     for i in range(n-1):
-        if not (ins[i:i+2] == "//"):
+        if (ins[i:i+2] == "//"):
+            break
+        else:
             cleaned_ins += ins[i]
-    # Leftover character
-    cleaned_ins += ins[n-1]
+    else:
+        # Leftover character
+        cleaned_ins += ins[n-1]
 
     return cleaned_ins
 
@@ -37,35 +39,41 @@ def main(ins):
     C_INSTRUCTION = 1
 
     cleaned_ins = remove_comments(remove_whitespace(ins))
-    print(cleaned_ins)
+    
+    # Removing empty lines
+    if cleaned_ins in ["", "\n"]:
+        return None
 
     # A instruction
     if cleaned_ins[0] == "@":
-        return (A_INSTRUCTION, cleaned_ins[1:])
+        return f"{A_INSTRUCTION}, {cleaned_ins[1:]}"
 
     else: # C instruction
-        if_des = ins.find("=")
-        if_jmp = ins.find(";")
+        if_des = cleaned_ins.find("=")
+        if_jmp = cleaned_ins.find(";")
         dest = comp = jmp = None
         
         if if_des != -1:
             if if_jmp != -1:
-                dest = ins[:if_des]
-                comp = ins[if_des+1:if_jmp]
-                jmp = ins[if_jmp+1:]
+                # eg: A=D+M;JGT
+                dest = cleaned_ins[:if_des]
+                comp = cleaned_ins[if_des+1:if_jmp]
+                jmp = cleaned_ins[if_jmp+1:]
 
             else:
-                dest = ins[:if_des]
-                comp = ins[if_des+1:]
+                # eg: D=D+M
+                dest = cleaned_ins[:if_des]
+                comp = cleaned_ins[if_des+1:]
         else:
             if if_jmp != -1:
-                dest = ins[:if_jmp]
-                jmp = ins[if_jmp+1:]
+                # eg: D;JGT
+                comp = cleaned_ins[:if_jmp]
+                jmp = cleaned_ins[if_jmp+1:]
         
-        return (C_INSTRUCTION, comp, dest, jmp)
+        return f"{C_INSTRUCTION}, {comp}, {dest}, {jmp}"
 
 if __name__ == "__main__":
     if (len(sys.argv) != 2):
         print("Usage: python3 parser.py \"<instruction>\"")
     else:
-        main(sys.argv[1])
+        print( main(sys.argv[1]) )
