@@ -10,7 +10,7 @@ Author: Abhinand D Manoj
 import sys
 
 def remove_whitespace(ins):
-    # ins = ins.trim()
+    ins = ins.strip()
     cleaned_ins = ""
     
     for i in ins:
@@ -22,31 +22,39 @@ def remove_comments(ins):
     cleaned_ins = ""
 
     n = len(ins)
-    for i in range(n-1):
-        if (ins[i:i+2] == "//"):
-            break
+    if n != 0:
+        for i in range(n-1):
+            if (ins[i:i+2] == "//"):
+                break
+            else:
+                cleaned_ins += ins[i]
         else:
-            cleaned_ins += ins[i]
-    else:
-        # Leftover character
-        cleaned_ins += ins[n-1]
+            # Leftover character
+            cleaned_ins += ins[n-1]
 
-    return cleaned_ins
+        return cleaned_ins
+    else:
+        return None
 
 def main(ins):
     # Instruction type codes
     A_INSTRUCTION = 0
     C_INSTRUCTION = 1
+    PSEUDO_INSTRUCTION = 2
 
     cleaned_ins = remove_comments(remove_whitespace(ins))
     
     # Removing empty lines
-    if cleaned_ins in ["", "\n"]:
+    if cleaned_ins in [None, ""]:
         return None
 
     # A instruction
     if cleaned_ins[0] == "@":
-        return f"{A_INSTRUCTION}, {cleaned_ins[1:]}"
+        return f"{A_INSTRUCTION},{cleaned_ins[1:]}"
+
+    # Pseudo instruction
+    elif cleaned_ins[0] == "(":
+        return f"{PSEUDO_INSTRUCTION},{cleaned_ins[1:-1]}"
 
     else: # C instruction
         if_des = cleaned_ins.find("=")
@@ -70,7 +78,7 @@ def main(ins):
                 comp = cleaned_ins[:if_jmp]
                 jmp = cleaned_ins[if_jmp+1:]
         
-        return f"{C_INSTRUCTION}, {comp}, {dest}, {jmp}"
+        return f"{C_INSTRUCTION},{comp},{dest},{jmp}"
 
 if __name__ == "__main__":
     if (len(sys.argv) != 2):

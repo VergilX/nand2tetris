@@ -4,9 +4,10 @@ Author: Abhinand D Manoj
 
 - Converts HACK Assembly language into HACK Machine code
 """
-import sys
-import parser
 import decoder
+import parser
+import preprocessor
+import sys
 
 OUT = "out.hack" # Output file path
 
@@ -15,11 +16,12 @@ def main():
         # new = file[:file.index(".")+1] + "hack"
         new = OUT
 
+        SYMBOLS = preprocessor.main(file)
         with open(new, "w") as g:
             for ins in f:
                 parsed_ins = parser.main(ins)
-                if parsed_ins is not None:
-                    decoded_ins = decoder.main(parsed_ins)
+                decoded_ins = decoder.main(parsed_ins, SYMBOLS)
+                if decoded_ins is not None:
                     g.write(decoded_ins + "\n")
 
 if __name__ == "__main__":

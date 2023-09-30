@@ -8,60 +8,65 @@ Author: Abhinand D Manoj
 """
 
 import sys
+import parser
 
 LABELS = {
         "SP" : 0,
-        "LCL" : 1,
-        "ARG" : 2,
+        "LCL" : 1, "ARG" : 2,
         "THIS" : 3,
         "THAT" : 4,
         "SCREEN" : 16384,
         "KBD" : 24576
         }
 
-def second_pass():
+def second_pass(file_handler):
     """ Generates the final symbol table """
 
     var_address = 16           # Location for variables
 
-    with open(file, "r") as f:
-        for line in f:
-            start_char = line[0]
+    for line in file_handler:
+        parsed_instruction = parser.main(line)
 
-            if start_char == "@":
-                arg = line[1:-1]            # Remove @ and '\n'
+        if parsed_instruction is not None:
+            cleaned_instruction = parsed_instruction.split(',')
+            instruction_type = cleaned_instruction[0]
 
-                if arg.isalpha():
+            if instruction_type == "0":
+                arg = cleaned_instruction[1]
+
+                if not arg.isdigit():
                     # If not present in symbol table
                     if arg not in LABELS:
                         LABELS[arg] = var_address
                         var_address += 1
 
-def first_pass():
+def first_pass(file_handler):
     """ Adds pseudo instructions to symbol table"""
 
-    with open(file, "r") as f:
-        instruction_count = 0       # Instruction line number
+    instruction_count = 0       # Instruction line number
 
-        for line in f:
-            # Ignore line comments and whitespace
-            if (not line.isspace()) and line!="\n" and line[:2]!="//":
-                start_char = line[0]    # Starting symbol of instruction
+    for line in file_handler:
+        # Parse line
+        parsed_instruction = parser.main(line)
 
-                # Pseudo symbols: (Xxx)
-                if start_char == "(":
-                    LABELS[line[1:-2]] = instruction_count      # Removing ( and )\n
+        if parsed_instruction is not None:
+            cleaned_instruction = parsed_instruction.split(',')
+            instruction_type = cleaned_instruction[0]
 
-                else:
-                    instruction_count += 1
+            if instruction_type == "2":           # If it's a pseudo instruction
+                LABELS[cleaned_instruction[1]] = instruction_count
+            else:
+                instruction_count += 1
 
-def main():
+def main(file):
     # Adding General Purpose Registers
     for i in range(16):
         LABELS[f"R{i}"] = i
 
-    first_pass()
-    second_pass()
+    with open(file, "r") as file_handler:
+        first_pass(file_handler)
+        file_handler.seek(0)       # Start of file
+        second_pass(file_handler)
 
     return LABELS
 
@@ -70,4 +75,4 @@ if __name__ == "__main__":
         print("Usage: python3 preprocessor.py file.asm")
     else:
         file = sys.argv[1]
-        print(main())
+        print(main(file))

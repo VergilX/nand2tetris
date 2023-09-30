@@ -72,14 +72,24 @@ def extend(binary):
     else:
         raise ValueError("Invalid input: Binary string too long")
 
-def main(parsed_ins):
+def main(parsed_ins, SYMBOLS=None):
+    # If None, return None
+    if parsed_ins is None:
+        return None
+
     # Cleaning input
-    parsed_ins = tuple(i.strip() for i in parsed_ins.split(','))
+    parsed_ins = tuple(i for i in parsed_ins.split(','))
 
     # A instruction
     if parsed_ins[0] == '0':
-        bin_data = bin(int(parsed_ins[1]))[2:]
-        return extend(bin_data)
+        arg = parsed_ins[1]
+        
+        if not arg.isdigit():
+            bin_data = bin(int(SYMBOLS[arg]))[2:]
+            return extend(bin_data)
+        else:
+            bin_data = bin(int(arg))[2:]
+            return extend(bin_data)
 
     # C instruction
     elif parsed_ins[0] == '1':
@@ -92,6 +102,10 @@ def main(parsed_ins):
             raise ValueError("Invalid instruction")
         else:
             return "111" + COMP_CODES[comp] + DEST_CODES[dest] + JMP_CODES[jmp]
+
+    # if pseudo-instruction, ignore
+    else:
+        return None
 
 if __name__ == "__main__":
     if (len(sys.argv) != 2):
