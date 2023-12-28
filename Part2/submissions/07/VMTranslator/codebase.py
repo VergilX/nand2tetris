@@ -143,7 +143,15 @@ AL_COMMANDS = {
         }
 
 # Memory access commands
-MEM_ACCESS_COMMANDS =  {
-        "pop"   :   10,
-        "push"  :   11
+POP_COMMANDS =  {
+        "constant"   :   "@<val>\n"     \
+                         "D=A\n"        \
+                         "@SP\n"        \
+                         "M=M+1\n"      \
+                         "A=M\n"        \
+                         "M=D\n",
+        }
+
+PUSH_COMMANDS = {
+        "local"  :   "",
         }

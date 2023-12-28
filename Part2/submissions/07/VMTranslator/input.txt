@@ -1,3 +1,1 @@
-gt
-eq
-add
+push constant 5
