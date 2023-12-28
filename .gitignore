@@ -1,5 +1,6 @@
-**.out
+**/*.out
 **/tools
-**.tst
-**.dat
-**.sh
+**/*.tst
+**/*.dat
+**/*.sh
+**/__pycache__/**
