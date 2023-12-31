@@ -1,114 +1,122 @@
-// push constant i
-@5 // replace with i value
-D=A
-@0 // replace with SP
-A=M // Go to memory address SP
-M=D // Push value
-@0 // Replace with SP
-M=M+1
-
-// ---------------------------------------------------------------------------------------
-
-// push local i
+// pop local i
+// addr=LCL+i, SP--, *addr=*SP
 @1 // LCL
 D=M
 @2 // i
-A=A+D
-D=M
+D=D+A
 @0 // SP
+M=M-1
 A=M
-M=D
-@0 // SP
-M=M+1 // SP++
+A=M
+// swapping
+A=A+D
+D=A-D
+A=A-D
+M=D // assigning to it
 
 // ---------------------------------------------------------------------------------------
 
-// push argument i
-@2 // ARG
+// pop argument i
+// addr=ARG+i, SP--, *addr=*SP
+@1 // ARG
 D=M
 @2 // i
-A=A+D
-D=M
+D=D+A
 @0 // SP
+M=M-1
 A=M
-M=D
-@0 // SP
-M=M+1 // SP++
+A=M
+
+// swapping
+A=A+D
+D=A-D
+A=A-D
+M=D // assigning to it
 
 // ---------------------------------------------------------------------------------------
 
-// push this i
-@3 // THIS
+// pop this i
+// addr=THIS+i, SP--, *addr=*SP
+@1 // THIS
 D=M
 @2 // i
-A=A+D
-D=M
+D=D+A
 @0 // SP
+M=M-1
 A=M
-M=D
-@0 // SP
-M=M+1 // SP++
+A=M
+
+// swapping
+A=A+D
+D=A-D
+A=A-D
+M=D // assigning to it
 
 // ---------------------------------------------------------------------------------------
 
-// push that i
-@2 // THAT
+// pop that i
+// addr=THAT+i, SP--, *addr=*SP
+@1 // THAT
 D=M
 @2 // i
-A=A+D
-D=M
+D=D+A
 @0 // SP
+M=M-1
 A=M
-M=D
-@0 // SP
-M=M+1 // SP++
+A=M
+
+// swapping
+A=A+D
+D=A-D
+A=A-D
+M=D // assigning to it
 
 // ---------------------------------------------------------------------------------------
 
-// push temp i
+// pop temp i
+// addr=5+i, SP--, *addr=*SP
 @5 // temp has constant base address 5
 D=M
 @2 // i
+D=D+A
+@0 // SP
+M=M-1
+A=M
+A=M
+
+// swapping
 A=A+D
-D=M
-@0 // SP
-A=M
-M=D
-@0 // SP
-M=M+1 // SP++
+D=A-D
+A=A-D
+M=D // assigning to it
 
 // ---------------------------------------------------------------------------------------
 
-// push pointer 0
+// pop pointer 0
+@0 // SP
+M=M-1
+A=M
+D=M
 @3 // THIS
-A=M
-D=M
-@0 // SP
-A=M
 M=D
-@0 // SP
-M=M+1 // SP++
 
 // ---------------------------------------------------------------------------------------
 
-// push pointer 1
+// pop pointer 1
+@0 // SP
+M=M-1
+A=M
+D=M
 @4 // THAT
-A=M
-D=M
-@0 // SP
-A=M
 M=D
-@0 // SP
-M=M+1 // SP++
 
 // ---------------------------------------------------------------------------------------
 
-// push static i
+// pop static i
 // Starts with address 16
-@15 // <file.i>
-D=M
 @0 // SP
+M=M-1
 A=M
+D=M
+@15 // <file>.i
 M=D
-@0 // SP
-M=M+1
