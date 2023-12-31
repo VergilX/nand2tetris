@@ -143,15 +143,101 @@ AL_COMMANDS = {
         }
 
 # Memory access commands
-POP_COMMANDS =  {
+PUSH_COMMANDS =  {
         "constant"   :   "@<val>\n"     \
                          "D=A\n"        \
                          "@SP\n"        \
-                         "M=M+1\n"      \
                          "A=M\n"        \
-                         "M=D\n",
+                         "M=D\n"        \
+                         "@SP\n"        \
+                         "M=M+1\n",
+
+        # includes local, argument, this, that
+        "segment"    :  "@<reg>\n"      \
+                        "D=M\n"         \
+                        "@<val>\n"      \
+                        "A=A+D\n"       \
+                        "D=M\n"         \
+                        "@SP\n"         \
+                        "A=M\n"         \
+                        "M=D\n"         \
+                        "@SP\n"         \
+                        "M=M+1\n",
+
+        # has a fixed base address 5
+        "temp"      :   "@5\n"          \
+                        "D=M\n"         \
+                        "@<val>\n"      \
+                        "A=A+D\n"       \
+                        "D=M\n"         \
+                        "@SP\n"         \
+                        "A=M\n"         \
+                        "M=D\n"         \
+                        "@SP\n"         \
+                        "M=M+1\n",
+
+        # replace i(<val>) with register of THIS/THAT
+        # corresponding to 0/1 in decoder
+        "pointer"   :   "@<val>\n"      \
+                        "A=M\n"         \
+                        "D=M\n"         \
+                        "@SP\n"         \
+                        "A=M\n"         \
+                        "M=D\n"         \
+                        "@SP\n"         \
+                        "M=M+1\n",
+
+        "static"    :   "@<file.i>\n"   \
+                        "D=M\n"         \
+                        "@SP\n"         \
+                        "A=M\n"         \
+                        "M=D\n"         \
+                        "@SP\n"         \
+                        "M=M+1\n"
         }
 
-PUSH_COMMANDS = {
-        "local"  :   "",
+POP_COMMANDS = {
+        # includes local, argument, this and that
+        "segment"   :   "@<reg>\n"       \
+                        "D=M\n"          \
+                        "@<val>\n"       \
+                        "D=D+A\n"        \
+                        "@SP\n"          \
+                        "M=M-1\n"        \
+                        "A=M\n"          \
+                        "A=M\n"          \
+                        "A=A+D\n"        \
+                        "D=A-D\n"        \
+                        "A=A-D\n"        \
+                        "M=D\n",
+
+        # has fixed base address of 5
+        "temp"      :   "@5\n"          \
+                        "D=M\n"         \
+                        "@<val>\n"      \
+                        "D=D+A\n"       \
+                        "@SP\n"         \
+                        "M=M-1\n"       \
+                        "A=M\n"         \
+                        "A=M\n"         \
+                        "A=A+D\n"       \
+                        "D=A-D\n"       \
+                        "A=A-D\n"       \
+                        "M=D\n",
+
+        # replace i(<val>) with register of THIS/THAT
+        # corresponding to 0/1 in decoder
+        "pointer"   :   "@SP\n"         \
+                        "M=M-1\n"       \
+                        "A=M\n"         \
+                        "D=M\n"         \
+                        "@<val>\n"      \
+                        "M=D\n",
+
+        "static"    :   "@SP\n"         \
+                        "M=M-1\n"       \
+                        "A=M\n"         \
+                        "D=M\n"         \
+                        "@<file.i>\n"   \
+                        "M=D\n"
         }
