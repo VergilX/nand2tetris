@@ -7,6 +7,7 @@ Sink: HACK Assembly
 Author: @abhinanddmanoj
 Date: 28 Dec 2023
 """
+
 import decoder
 import parser
 import sys
@@ -19,7 +20,9 @@ def main():
         f = open(FILE, "w")
 
         # Input file
-        g = open(sys.argv[1], "r")
+        file = sys.argv[1]
+        filename = file[:file.index('.')]
+        g = open(file, "r")
     except FileNotFoundError:
         print("File not found")
     else:
@@ -34,13 +37,14 @@ def main():
             f.write("// " + instruction + "\n")
 
             parsed_instruction = parser.main(instruction)
-            decoded_instruction = decoder.main(parsed_instruction)
+            decoded_instruction = decoder.main(parsed_instruction, filename)
             # print(decoded_instruction)
             f.write(decoded_instruction)
 
             # Reading next line
             instruction = g.readline().strip()
         f.close()
+        g.close()
 
 if __name__ == "__main__":
     syslen = len(sys.argv)

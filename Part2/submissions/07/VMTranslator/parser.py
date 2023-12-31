@@ -13,6 +13,7 @@ RETURN VALUE:
     list( <operation_code>, [<segment_code>, <value>] )
 
 """
+
 import sys
 
 def main(instruction):
