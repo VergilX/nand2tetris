@@ -17,6 +17,11 @@ REGISTER = {
         "this"      : "THIS",
         "that"      : "THAT"
         }
+JMP_COMMANDS = {
+        "gt"        : "JGT",
+        "lt"        : "JLT",
+        "eq"        : "JEQ"
+        }
 
 def main(parsed_instruction, filename):
     global ITERATION
@@ -25,14 +30,12 @@ def main(parsed_instruction, filename):
     operation = parsed_instruction[0]
 
     # Arithmetic or Logical commands
-    if operation in AL_COMMANDS:
+    if (operation in AL_COMMANDS) or (operation in JMP_COMMANDS):
 
         # If eq, lt, gt; dynamic naming is required
         if operation in ["eq", "lt", "gt"]:
-            # In codebase, <val> is used as delimiter for
-            # iteration replacement in arithmetic and logical
-            # operations
-            returnvalue = AL_COMMANDS[operation].replace("<val>", str(ITERATION))
+            # to be replaced: <val>, <jmp>
+            returnvalue = AL_COMMANDS["comp"].replace("<val>", str(ITERATION)).replace("<jmp>", str(JMP_COMMANDS[operation]))
             ITERATION += 1
             return returnvalue
 
@@ -52,7 +55,7 @@ def main(parsed_instruction, filename):
         # will only have single argument
         arg = parsed_instruction[2][0]
 
-        # constant and base have similar substitutions
+        # constant and temp have similar substitutions
         if (segment=="constant") or (segment=="temp"):
             # In codebase, <val> is used as delimiter for
             # replacing arg in HACK assembly
