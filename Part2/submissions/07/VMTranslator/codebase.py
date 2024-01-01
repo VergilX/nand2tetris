@@ -15,33 +15,35 @@ RETURN VALUE:
 # Arithmetic and Logical commands
 AL_COMMANDS = {
         "add"   :   "@SP\n"     \
+                    "M=M-1\n"   \
                     "A=M\n"     \
                     "D=M\n"     \
                     "A=A-1\n"   \
-                    "M=D+M\n"   \
-                    "@SP\n"     \
-                    "M=M-1\n",
+                    "M=D+M\n",
 
         "sub"   :   "@SP\n"     \
+                    "M=M-1\n"   \
                     "A=M\n"     \
                     "D=M\n"     \
                     "A=A-1\n"   \
-                    "M=M-D\n"   \
-                    "@SP\n"     \
-                    "M=M-1\n",
+                    "M=M-D\n",
 
         "neg"   :   "@SP\n"     \
+                    "M=M-1\n"   \
                     "A=M\n"     \
-                    "M=-M\n",
+                    "M=-M\n"    \
+                    "@SP\n"     \
+                    "M=M+1\n",
 
-        "eq"    :   "@SP\n"         \
+        "comp"    : "@SP\n"         \
+                    "M=M-1\n"       \
                     "A=M\n"         \
                     "D=M\n"         \
                     "A=A-1\n"       \
-                    "D=D-M\n\n"     \
+                    "D=M-D\n\n"     \
                                     \
                     "@TRUE<val>\n"  \
-                    "D;JEQ\n"       \
+                    "D;<jmp>\n"       \
                     "@FALSE<val>\n" \
                     "0;JMP\n\n"     \
                                     \
@@ -59,87 +61,29 @@ AL_COMMANDS = {
                     "@END<val>\n"   \
                     "0;JMP\n\n"         \
                                     \
-                    "(END<val>)\n"  \
-                    "@SP\n"         \
-                    "M=M-1\n",
-
-        "lt"    :   "@SP\n"         \
-                    "A=M\n"         \
-                    "D=M\n"         \
-                    "A=A-1\n"       \
-                    "D=D-M\n\n"     \
-                                    \
-                    "@TRUE<val>\n"  \
-                    "D;JLT\n"       \
-                    "@FALSE<val>\n" \
-                    "0;JMP\n\n"     \
-                                    \
-                    "(TRUE<val>)\n"  \
-                    "@SP\n"         \
-                    "A=M-1\n"       \
-                    "M=-1\n"        \
-                    "@END<val>\n"   \
-                    "0;JMP\n\n"     \
-                                    \
-                    "(FALSE<val>)\n" \
-                    "@SP\n"         \
-                    "A=M-1\n"       \
-                    "M=0\n"         \
-                    "@END<val>\n"   \
-                    "0;JMP\n\n"         \
-                                    \
-                    "(END<val>)\n"  \
-                    "@SP\n"         \
-                    "M=M-1\n",
-
-        "gt"    :   "@SP\n"         \
-                    "A=M\n"         \
-                    "D=M\n"         \
-                    "A=A-1\n"       \
-                    "D=D-M\n\n"     \
-                                    \
-                    "@TRUE<val>\n"  \
-                    "D;JGT\n"       \
-                    "@FALSE<val>\n" \
-                    "0;JMP\n\n"     \
-                                    \
-                    "(TRUE<val>)\n"  \
-                    "@SP\n"         \
-                    "A=M-1\n"       \
-                    "M=-1\n"        \
-                    "@END<val>\n"   \
-                    "0;JMP\n\n"     \
-                                    \
-                    "(FALSE<val>)\n" \
-                    "@SP\n"         \
-                    "A=M-1\n"       \
-                    "M=0\n"         \
-                    "@END<val>\n"   \
-                    "0;JMP\n\n"         \
-                                    \
-                    "(END<val>)\n"  \
-                    "@SP\n"         \
-                    "M=M-1\n",
+                    "(END<val>)\n",
 
         "and"   :   "@SP\n"     \
+                    "M=M-1\n"   \
                     "A=M\n"     \
                     "D=M\n"     \
                     "A=A-1\n" \
-                    "M=M&D\n"   \
-                    "@SP\n"     \
-                    "M=M-1\n",
+                    "M=M&D\n",
 
         "or"    :   "@SP\n"     \
+                    "M=M-1\n"   \
                     "A=M\n"     \
                     "D=M\n"     \
                     "A=A-1\n"   \
-                    "M=M|D\n"   \
-                    "@SP\n"     \
-                    "M=M-1\n",
+                    "M=M|D\n",
 
         "not"   :   "@SP\n"     \
+                    "M=M-1\n"   \
                     "A=M\n"     \
-                    "M=!M\n"
+                    "M=!M\n"    \
+                    "@SP\n"     \
+                    "M=M+1\n",
+
         }
 
 # Memory access commands
@@ -179,7 +123,6 @@ PUSH_COMMANDS =  {
         # replace i(<val>) with register of THIS/THAT
         # corresponding to 0/1 in decoder
         "pointer"   :   "@<val>\n"      \
-                        "A=M\n"         \
                         "D=M\n"         \
                         "@SP\n"         \
                         "A=M\n"         \
@@ -213,7 +156,7 @@ POP_COMMANDS = {
 
         # has fixed base address of 5
         "temp"      :   "@5\n"          \
-                        "D=M\n"         \
+                        "D=A\n"         \
                         "@<val>\n"      \
                         "D=D+A\n"       \
                         "@SP\n"         \
