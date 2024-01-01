@@ -67,7 +67,7 @@ M=M+1 // SP++
 
 // push temp i
 @5 // temp has constant base address 5
-D=M
+D=A
 @2 // i
 A=A+D
 D=M

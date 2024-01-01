@@ -30,7 +30,7 @@ def main():
         while (instruction != ""):
             # instruction = g.readline().strip()
             instruction = instruction.strip()
-            print(instruction)
+            # print(instruction)
 
             # If not empty line or comment
             if (instruction not in ["", "\n"]) and (instruction[:2]!="//"):

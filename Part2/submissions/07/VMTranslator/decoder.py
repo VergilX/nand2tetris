@@ -25,7 +25,6 @@ JMP_COMMANDS = {
 
 def main(parsed_instruction, filename):
     global ITERATION
-    global STATIC
 
     operation = parsed_instruction[0]
 

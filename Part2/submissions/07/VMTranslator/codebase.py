@@ -110,7 +110,7 @@ PUSH_COMMANDS =  {
 
         # has a fixed base address 5
         "temp"      :   "@5\n"          \
-                        "D=M\n"         \
+                        "D=A\n"         \
                         "@<val>\n"      \
                         "A=A+D\n"       \
                         "D=M\n"         \
