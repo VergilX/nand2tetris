@@ -26,23 +26,26 @@ def main():
     except FileNotFoundError:
         print("File not found")
     else:
-        instruction = g.readline().strip()
+        instruction = g.readline()
 
         # Reading whole input file
-        while (len(instruction) != 0):
+        while (instruction != ""):
             # instruction = g.readline().strip()
+            instruction = instruction.strip()
             print(instruction)
 
-            # Writing instruction as comment
-            f.write("// " + instruction + "\n")
+            # If not empty line or comment
+            if (instruction not in ["", "\n"]) and (instruction[:2]!="//"):
+                # Writing instruction as comment
+                f.write("// " + instruction + "\n")
 
-            parsed_instruction = parser.main(instruction)
-            decoded_instruction = decoder.main(parsed_instruction, filename)
-            # print(decoded_instruction)
-            f.write(decoded_instruction)
+                parsed_instruction = parser.main(instruction)
+                decoded_instruction = decoder.main(parsed_instruction, filename)
+                # print(decoded_instruction)
+                f.write(decoded_instruction)
 
             # Reading next line
-            instruction = g.readline().strip()
+            instruction = g.readline()
         f.close()
         g.close()
 
