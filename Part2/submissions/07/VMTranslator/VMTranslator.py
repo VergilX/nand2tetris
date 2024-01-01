@@ -20,8 +20,6 @@ def main():
         f = open(FILE, "w")
 
         # Input file
-        file = sys.argv[1]
-        filename = file[:file.index('.')]
         g = open(file, "r")
     except FileNotFoundError:
         print("File not found")
@@ -54,6 +52,14 @@ if __name__ == "__main__":
     if syslen not in [2, 3]:
         print("Usage: python3 VMTranslator.py <inputfile> [<outputfile>]")
     else:
+        # input file details
+        file = sys.argv[1]
+        filename = file[:file.index('.')]
+
         if syslen == 3:
+            # output filename provided in cli
             FILE = sys.argv[2]
+        else:
+            # default
+            FILE = filename+".asm"
         main()
