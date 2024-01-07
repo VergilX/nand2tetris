@@ -6,7 +6,6 @@ Date: 26 Dec 2023
 
 GUIDELINES:
 -> Divide lines into lexical expressions
--> No whitespace or comments so easy
 -> Returns codes based on codebase.py
 
 RETURN VALUE:
@@ -16,6 +15,26 @@ RETURN VALUE:
 
 import sys
 
+def remove_whitespace(instruction):
+    """
+        Input: instruction without comments
+        Output: list
+    """
+
+    instruction = instruction.strip()
+    return [element.strip() for element in instruction.split()]
+
+
+def remove_comments(instruction):
+    length  = len(instruction)
+
+    for index in range(length-2):
+        if instruction[index:index+2] == "//":
+            return instruction[:index].strip()
+
+    # If there is not content
+    return instruction
+
 def main(instruction):
     """ Driving code """
 
@@ -24,7 +43,11 @@ def main(instruction):
     components[1] : segmentPointer
     components[2:]: arguments
     """
-    components = instruction.split()
+    components = remove_whitespace(remove_comments(instruction))
+
+    # If no content
+    if components == []:
+        return ""
 
     # Arranging to format above mentioned format
     if len(components) > 2:

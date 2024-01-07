@@ -28,18 +28,14 @@ def main():
 
         # Reading whole input file
         while (instruction != ""):
-            # instruction = g.readline().strip()
-            instruction = instruction.strip()
-            # print(instruction)
+            parsed_instruction = parser.main(instruction)
 
             # If not empty line or comment
-            if (instruction not in ["", "\n"]) and (instruction[:2]!="//"):
+            if (parsed_instruction != ""):
                 # Writing instruction as comment
-                f.write("// " + instruction + "\n")
+                f.write("// " + instruction)
 
-                parsed_instruction = parser.main(instruction)
                 decoded_instruction = decoder.main(parsed_instruction, filename)
-                # print(decoded_instruction)
                 f.write(decoded_instruction)
 
             # Reading next line
