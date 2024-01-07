@@ -4,7 +4,7 @@
 ### Progress
 Nand2Tetris PartI completed
 
-Nand2Tetris PartII:
-    - Project 7: 80% (some kind of error)
-    - Project 8: In progress
+Nand2Tetris PartII:<br>
+- Project 7: 80% (some kind of error)
+- Project 8: In progress
 
