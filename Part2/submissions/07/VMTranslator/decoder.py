@@ -85,6 +85,26 @@ def main(parsed_instruction, filename):
             print(f"Undefined segment name: '{segment}'")
             return ""
 
+    # Branching instructions
+    elif operation in ["label", "goto", "if-goto"]:
+
+        # CHANGE: use current function name here
+        # for now, using null
+        labelname = filename + ".null$" + parsed_instruction[1]
+
+        # label <labelname>
+        if operation == "label":
+            return BRANCHING_COMMANDS["label"].replace("<label>", labelname)
+
+        # goto <labelname>
+        elif operation == "goto":
+            return BRANCHING_COMMANDS["goto"].replace("<label>", labelname)
+
+        # if-goto <labelname>
+        elif operation == "if-goto":
+            return BRANCHING_COMMANDS["if-goto"].replace("<label>", labelname)
+
+
     else:
         print("yet to implement")
 

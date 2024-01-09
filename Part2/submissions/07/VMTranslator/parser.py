@@ -40,7 +40,7 @@ def main(instruction):
 
     """
     components[0] : operation
-    components[1] : segmentPointer
+    components[1] : segmentPointer/label/funcname
     components[2:]: arguments
     """
     components = remove_whitespace(remove_comments(instruction))

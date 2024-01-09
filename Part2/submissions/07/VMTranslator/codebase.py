@@ -184,3 +184,18 @@ POP_COMMANDS = {
                         "@<file.i>\n"   \
                         "M=D\n"
         }
+
+# Branching commands
+BRANCHING_COMMANDS = {
+        "label"     :   "(<label>)\n",
+
+        "goto"      :   "@<label>\n"    \
+                        "0;JMP\n",
+
+        "if-goto"   :   "@SP\n"         \
+                        "M=M-1\n"       \
+                        "A=M\n"         \
+                        "D=!M\n"        \
+                        "@<label>\n"    \
+                        "D;JNE\n"
+                        }
