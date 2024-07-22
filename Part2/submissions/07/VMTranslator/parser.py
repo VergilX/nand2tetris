@@ -49,12 +49,6 @@ def main(instruction):
     if components == []:
         return ""
 
-    # Arranging to format above mentioned format
-    if len(components) > 2:
-        # will cause issue in multiple args, deal with it later
-        args = [int(elem) for elem in components[2:]]
-        components = [components[0], components[1], args]
-
     return components
 
 if __name__ == "__main__":

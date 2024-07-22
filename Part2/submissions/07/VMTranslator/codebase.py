@@ -199,3 +199,152 @@ BRANCHING_COMMANDS = {
                         "@<label>\n"    \
                         "D;JNE\n"
                         }
+
+# Function commands
+FUNCTION_COMMANDS = {
+        "call"      :   # push retAddr
+                        # Foo.ret$1
+                        "@<fname>$ret.<index>\n"        \
+                        "D=A\n"                         \
+                        "@SP\n"                         \
+                        "A=M\n"                         \
+                        "M=D\n"                         \
+                        "@SP\n"                         \
+                        "M=M+1\n"                       \
+
+                        # push LCL
+                        "@LCL\n"        \
+                        "D=M\n"         \
+                        "@SP\n"         \
+                        "A=M\n"         \
+                        "M=D\n"         \
+                        "@SP\n"         \
+                        "M=M+1\n"       \
+
+                        # push ARG
+                        "@ARG\n"        \
+                        "D=M\n"         \
+                        "@SP\n"         \
+                        "A=M\n"         \
+                        "M=D\n"         \
+                        "@SP\n"         \
+                        "M=M+1\n"       \
+
+                        # push THIS
+                        "@THIS\n"       \
+                        "D=M\n"         \
+                        "@SP\n"         \
+                        "A=M\n"         \
+                        "M=D\n"         \
+                        "@SP\n"         \
+                        "M=M+1\n"       \
+
+                        # push THAT
+                        "@THAT\n"       \
+                        "D=M\n"         \
+                        "@SP\n"         \
+                        "A=M\n"         \
+                        "M=D\n"         \
+                        "@SP\n"         \
+                        "M=M+1\n"       \
+
+                        # ARG = SP-5-nArgs
+                        "@5\n"          \
+                        "D=A\n"         \
+                        "@SP\n"         \
+                        "D=M-D\n"       \
+                        "@<nArgs>\n"    \
+                        "D=D-A\n"       \
+                        "@ARG\n"        \
+                        "M=D\n"         \
+
+                        # LCL = SP
+                        "@SP\n"         \
+                        "D=M\n"         \
+                        "@LCL\n"        \
+                        "M=D\n"         \
+
+                        # goto <fname>
+                        "@<fname>\n"    \
+                        "0;JMP\n",
+
+                        # add (returnAddress) in decoder
+
+        "function"  :   # push 0 (multiply with nVars in decoder)
+                        "@SP\n"         \
+                        "A=M\n"         \
+                        "M=0\n"         \
+                        "@SP\n"         \
+                        "M=M+1\n",
+
+        "return"    :   # endframe = LCL
+                        "@LCL\n"        \
+                        "D=M\n"         \
+                        "@R13\n"        \
+                        "M=D\n"         \
+
+                        # retaddr = *(endframe-5)
+                        "@5\n"          \
+                        "D=A\n"         \
+                        "@R13\n"        \
+                        "A=M-D\n"       \
+                        "D=M\n"         \
+                        "@R14\n"        \
+                        "M=D\n"         \
+
+                        # *ARG = pop()
+                        "@SP\n"         \
+                        "M=M-1\n"       \
+                        "A=M\n"         \
+                        "D=M\n"         \
+                        "@ARG\n"        \
+                        "A=M\n"         \
+                        "M=D\n"         \
+
+                        # SP = ARG+1
+                        "@ARG\n"        \
+                        "D=M+1\n"       \
+                        "@SP\n"         \
+                        "M=D\n"         \
+
+                        # THAT = *(endframe-1)
+                        "@1\n"          \
+                        "D=A\n"         \
+                        "@R13\n"        \
+                        "A=M-D\n"       \
+                        "D=M\n"         \
+                        "@THAT\n"       \
+                        "M=D\n"         \
+
+                        # THIS = *(endframe-2)
+                        "@2\n"          \
+                        "D=A\n"         \
+                        "@R13\n"        \
+                        "A=M-D\n"       \
+                        "D=M\n"         \
+                        "@THIS\n"       \
+                        "M=D\n"         \
+
+                        # ARG = *(endframe-3)
+                        "@3\n"          \
+                        "D=A\n"         \
+                        "@R13\n"        \
+                        "A=M-D\n"       \
+                        "D=M\n"         \
+                        "@ARG\n"        \
+                        "M=D\n"         \
+
+                        # LCL = *(endframe-4)
+                        "@4\n"          \
+                        "D=A\n"         \
+                        "@R13\n"        \
+                        "A=M-D\n"       \
+                        "D=M\n"         \
+                        "@LCL\n"        \
+                        "M=D\n"         \
+
+                        # goto returnaddress
+                        "@R14\n"        \
+                        "A=M\n"         \
+                        "0;JMP\n"
+                        }

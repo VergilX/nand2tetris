@@ -14,6 +14,7 @@ import sys
 
 FILE = "output.asm"
 
+
 def main():
     try:
         # Output file
@@ -42,6 +43,7 @@ def main():
             instruction = g.readline()
         f.close()
         g.close()
+
 
 if __name__ == "__main__":
     syslen = len(sys.argv)

@@ -9,6 +9,8 @@ from codebase import *
 import sys
 
 ITERATION = 0
+CURRENT_FUNCTION = "null"
+CURRENT_FUNCTION_INDEX = 0
 
 # Register names
 REGISTER = {
@@ -24,7 +26,7 @@ JMP_COMMANDS = {
         }
 
 def main(parsed_instruction, filename):
-    global ITERATION
+    global ITERATION, CURRENT_FUNCTION_INDEX, CURRENT_FUNCTION
 
     operation = parsed_instruction[0]
 
@@ -52,24 +54,31 @@ def main(parsed_instruction, filename):
         segment = parsed_instruction[1]
 
         # will only have single argument
-        arg = parsed_instruction[2][0]
+        arg = parsed_instruction[2]
+
+        # Checking if arg is valud
+        """
+        if type(arg) != int:
+            print("Invalid type of argument")
+            return False
+        """
 
         # constant and temp have similar substitutions
         if (segment=="constant") or (segment=="temp"):
             # In codebase, <val> is used as delimiter for
             # replacing arg in HACK assembly
-            return COMMANDS[segment].replace("<val>", str(arg))
+            return COMMANDS[segment].replace("<val>", arg)
 
         elif segment in ["local", "argument", "this", "that"]:
             # to be replaced: <val>, <reg>
-            return COMMANDS["segment"].replace("<reg>", REGISTER[segment]).replace("<val>", str(arg))
+            return COMMANDS["segment"].replace("<reg>", REGISTER[segment]).replace("<val>", arg)
 
         elif segment == "pointer":
             # 0 -> THIS
-            if arg == 0:
+            if arg == '0':
                 return COMMANDS[segment].replace("<val>", "THIS")
             # 1 -> THAT
-            elif arg == 1:
+            elif arg == '1':
                 return COMMANDS[segment].replace("<val>", "THAT")
             else:
                 print("Invalid argument for pointer segment")
@@ -77,7 +86,7 @@ def main(parsed_instruction, filename):
 
         elif segment == "static":
             # to be replaced: <val>
-            val = filename+"."+str(arg) # Foo.i for input 'Foo.vm'
+            val = filename+"."+arg # Foo.i for input 'Foo.vm'
 
             return COMMANDS[segment].replace("<file.i>", val)
 
@@ -90,7 +99,7 @@ def main(parsed_instruction, filename):
 
         # CHANGE: use current function name here
         # for now, using null
-        labelname = filename + ".null$" + parsed_instruction[1]
+        labelname = filename + f".{CURRENT_FUNCTION}$" + parsed_instruction[1]
 
         # label <labelname>
         if operation == "label":
@@ -104,8 +113,44 @@ def main(parsed_instruction, filename):
         elif operation == "if-goto":
             return BRANCHING_COMMANDS["if-goto"].replace("<label>", labelname)
 
+    # call <funcname> <nArgs>
+    elif operation == "call":
+        to_replace = {
+            "<fname>": CURRENT_FUNCTION,
+            "<index>": CURRENT_FUNCTION_INDEX,
+            "<nArgs>": parsed_instruction[2]
+        }
+
+        # Updating index if current function
+        CURRENT_FUNCTION_INDEX += 1
+
+        decoded_instruction = FUNCTION_COMMANDS["call"]
+        for element in to_replace:
+            decoded_instruction = decoded_instruction.replace(element, str(to_replace[element]))
+
+        return decoded_instruction
+
+    # function <funcname> <nVars>
+    elif operation == "function":
+        function = parsed_instruction[1]
+
+        # Reseting index for new function
+        CURRENT_FUNCTION_INDEX = 0
+        CURRENT_FUNCTION = function
+
+        # have to print the value nVars times
+        decoded_instruction = ""
+        for iteration in range(int(parsed_instruction[2])):
+            decoded_instruction += FUNCTION_COMMANDS["function"]
+
+        return decoded_instruction
+
+    # return
+    elif operation == "return":
+        return FUNCTION_COMMANDS["return"]
 
     else:
+        print(operation)  # for debugging
         print("yet to implement")
 
 if __name__ == "__main__":
